@@ -1,3 +1,0 @@
-[submodule "vendor/glew"]
-	path = vendor/glew
-	url = git@github.com:zjhcn/glew.git
