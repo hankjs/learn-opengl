@@ -1,15 +1,16 @@
 {
   "configurations": [
     {
-      "name": "Windows",
+      "name": "LearnOpenGL",
       "type": "cppvsdbg",
       "request": "launch",
-      "program": "${workspaceFolder}/../bin/Debug-windows-x86_64/Sandbox/Sandbox.exe",
+      "program": "${workspaceFolder}/bin/Debug-windows-x86_64/Sandbox/Sandbox.exe",
       "args": [],
       "stopAtEntry": false,
       "cwd": "${workspaceFolder}",
       "environment": [],
-      "console": "internalConsole"
+      "console": "internalConsole",
+      "preLaunchTask": "build:Sandbox"
     }
   ],
   "version": "2.0.0"
