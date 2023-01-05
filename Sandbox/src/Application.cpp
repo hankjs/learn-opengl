@@ -62,19 +62,16 @@ int main()
      * 矩形形的顶点坐标
     */
     float vertices[] = {
-        0.5f, 0.5f, 0.0f,   // 右上角
-        0.5f, -0.5f, 0.0f,  // 右下角
-        -0.5f, -0.5f, 0.0f, // 左下角
-        -0.5f, 0.5f, 0.0f   // 左上角
+        -0.5f, -0.5f, 0.0f,
+        0.5f, -0.5f, 0.0f,
+        0.0f,  0.5f, 0.0f
     };
 
     unsigned int indices[] = {
         // 注意索引从0开始! 
         // 此例的索引(0,1,2,3)就是顶点数组vertices的下标，
         // 这样可以由下标代表顶点组合成矩形
-
-        0, 1, 3, // 第一个三角形
-        1, 2, 3  // 第二个三角形
+        0, 1, 2, // 第一个三角形
     };
 
     unsigned int EBO;
@@ -109,9 +106,11 @@ int main()
     */
     const char *vertexShaderSource = "#version 330 core\n"
         "layout (location = 0) in vec3 aPos;\n"
+        "out vec4 vertexColor; // 为片段着色器指定一个颜色输出\n"
         "void main()\n"
         "{\n"
         "   gl_Position = vec4(aPos.x, aPos.y, aPos.z, 1.0);\n"
+        "   vertexColor = vec4(0.5, 0.0, 0.0, 1.0); // 把输出变量设置为暗红色\n"
         "}\0";
 
     /**
@@ -146,9 +145,10 @@ int main()
     */
     const char *fragmentShaderSource = "#version 330 core\n"
         "out vec4 FragColor;\n"
+        "in vec4 vertexColor; // 从顶点着色器传来的输入变量（名称相同、类型相同）\n"
         "void main()\n"
         "{\n"
-        "   FragColor = vec4(1.0f, 0.5f, 0.2f, 1.0f);\n"
+        "   FragColor = vertexColor;\n"
         "}\0";
 
     unsigned int fragmentShader;
@@ -187,7 +187,8 @@ int main()
     glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
     glEnableVertexAttribArray(0);
 
-    glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+    // 只绘制线框
+    // glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 
     /**
      * glfwWindowShouldClose函数在我们每次循环的开始前检查一次GLFW是否被要求退出，如果是的话该函数返回true然后渲染循环便结束了，之后为我们就可以关闭应用程序了。
@@ -209,7 +210,7 @@ int main()
         glClear(GL_COLOR_BUFFER_BIT);
 
         glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
-        glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
+        glDrawElements(GL_TRIANGLES, 3, GL_UNSIGNED_INT, 0);
 
         /**
          * 双缓冲(Double Buffer)
