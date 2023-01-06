@@ -25,6 +25,15 @@
             },
             // Use the standard MS compiler pattern to detect errors, warnings and infos
             "problemMatcher": "$msCompile"
+        },
+        {
+            "label": "premake",
+            "type": "shell",
+            "command": "${workspaceFolder}/vendor/bin/premake/premake5.exe",
+            "args": [
+                "vs2022",
+            ],
+            "group": "build"
         }
     ]
 }

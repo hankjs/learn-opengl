@@ -7,7 +7,7 @@
       "program": "${workspaceFolder}/bin/Debug-windows-x86_64/Sandbox/Sandbox.exe",
       "args": [],
       "stopAtEntry": false,
-      "cwd": "${workspaceFolder}",
+      "cwd": "${workspaceFolder}/Sandbox/src",
       "environment": [],
       "console": "internalConsole",
       "preLaunchTask": "build:Sandbox"

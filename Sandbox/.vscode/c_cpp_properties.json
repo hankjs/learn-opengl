@@ -4,6 +4,7 @@
             "name": "Sandbox",
             "includePath": [
                 "${default}",
+                "${workspaceFolder}/src",
                 "${workspaceFolder}/../vendor/Glad/include",
                 "${workspaceFolder}/../vendor/GLFW/include"
             ],
