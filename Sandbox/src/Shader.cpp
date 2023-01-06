@@ -35,12 +35,6 @@ Shader::Shader(const char *vertexPath, const char *fragmentPath)
     unsigned int vertex;
     unsigned int fragment;
     /**
-     * 检测编译结果
-     * */
-    int  success;
-    char infoLog[512];
-
-    /**
      * 创建顶点着色器对象
      * 我们把需要创建的着色器类型以参数形式提供给`glCreateShader`。
      * 由于我们正在创建一个顶点着色器，传递的参数是`GL_VERTEX_SHADER`。
@@ -51,15 +45,7 @@ Shader::Shader(const char *vertexPath, const char *fragmentPath)
      * */
     glShaderSource(vertex, 1, &vertexSource, NULL);
     glCompileShader(vertex);
-    /**
-     * 检测编译结果
-     * */
-    glGetShaderiv(vertex, GL_COMPILE_STATUS, &success);
-    if(!success)
-    {
-      glGetShaderInfoLog(vertex, 512, NULL, infoLog);
-      std::cout << "ERROR::SHADER::VERTEX::COMPILATION_FAILED\n" << infoLog << std::endl;
-    }
+    checkCompileErrors(vertex, "VERTEX");
 
     /**
      * 片段着色器
@@ -70,26 +56,14 @@ Shader::Shader(const char *vertexPath, const char *fragmentPath)
      * */
     glShaderSource(fragment, 1, &fragmentSource, NULL);
     glCompileShader(fragment);
-    /**
-     * 检测编译结果
-     * */
-    glGetShaderiv(fragment, GL_COMPILE_STATUS, &success);
-    if(!success)
-    {
-      glGetShaderInfoLog(fragment, 512, NULL, infoLog);
-      std::cout << "ERROR::SHADER::FRAGMENT::COMPILATION_FAILED\n" << infoLog << std::endl;
-    }
+    checkCompileErrors(fragment, "FRAGMENT");
 
     ID = glCreateProgram();
     glAttachShader(ID, vertex);
     glAttachShader(ID, fragment);
 
     glLinkProgram(ID);
-    glGetProgramiv(ID, GL_LINK_STATUS, &success);
-    if(!success) {
-      glGetProgramInfoLog(ID, 512, NULL, infoLog);
-      std::cout << "ERROR::SHADER::PROGRAM::COMPILATION_FAILED\n" << infoLog << std::endl;
-    }
+    checkCompileErrors(ID, "PROGRAM");
 
     glDeleteShader(vertex);
     glDeleteShader(fragment);
@@ -115,4 +89,24 @@ void Shader::setInt(const std::string &name, int value) const
 
 void Shader::setFloat(const std::string &name, float value) const
 {
+}
+
+void Shader::checkCompileErrors(unsigned int shader, std::string type)
+{
+  int success;
+  char infoLog[512];
+
+  if (type != "PROGRAM")
+  {
+    glGetShaderiv(shader, GL_COMPILE_STATUS, &success);
+  } else {
+    glGetProgramiv(shader, GL_LINK_STATUS, &success);
+  }
+  
+  if (!success)
+  {
+    type != "PROGRAM" ? glGetShaderInfoLog(shader, 512, NULL, infoLog) : glGetProgramInfoLog(shader, 512, NULL, infoLog);
+    std::cout << "ERROR::SHADER::" << type << "::COMPILATION_FAILED\n"
+              << infoLog << std::endl;
+  }
 }
