@@ -13,12 +13,6 @@ void processInput(GLFWwindow *window);
 
 int main()
 {
-    glm::vec4 vec(1.0f, 0.0f, 0.0f, 1.0f);
-    glm::mat4 trans;
-    trans = glm::translate(trans, glm::vec3(1.0f, 1.0f, 0.0f));
-    vec = trans * vec;
-    std::cout << vec.x << vec.y << vec.z << std::endl;
-
     glfwInit();
     /** 设定OpenGL 版本: 3.3 */
     glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3); // 指定OpenGL主版本
@@ -176,6 +170,14 @@ int main()
     }
     stbi_image_free(data);
 
+    glm::mat4 trans;
+    /** 位移 */
+    // trans = glm::translate(trans, glm::vec3(-0.0001f, 0, 0));
+    // 旋转
+    trans = glm::rotate(trans, glm::radians(90.0f), glm::vec3(0.0, 0.0, 1.0));
+    /** 缩放 */
+    trans = glm::scale(trans, glm::vec3(0.5, 0.5, 0.5));
+
     // 只绘制线框
     // glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 
@@ -206,6 +208,7 @@ int main()
         shader->use();
         glUniform1i(glGetUniformLocation(shader->ID, "ourTexture"), 0);
         glUniform1i(glGetUniformLocation(shader->ID, "ourFace"), 1);
+        glUniformMatrix4fv(glGetUniformLocation(shader->ID, "transform"), 1, GL_FALSE, glm::value_ptr(trans));
 
         glBindVertexArray(VAO);
         glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
