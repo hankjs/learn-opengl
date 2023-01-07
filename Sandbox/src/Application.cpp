@@ -123,9 +123,10 @@ int main()
      * OpenGL是个状态机,其实只需要在init之后上下文可以使用了就可以绑定。
      * 不过考虑到渲染流程，设定资源先后加载顺序可以更直觉。
     */
-    unsigned int texBuffer;
-    glGenTextures(1, &texBuffer);
-    glBindTexture(GL_TEXTURE_2D, texBuffer);
+    unsigned int texBufferA;
+    glGenTextures(1, &texBufferA);
+    glActiveTexture(GL_TEXTURE0);
+    glBindTexture(GL_TEXTURE_2D, texBufferA);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
@@ -134,10 +135,30 @@ int main()
     int width;
     int height;
     int nrChannels;
+    /**
+     * stbi Y轴反转
+    */
+    stbi_set_flip_vertically_on_load(true);
     unsigned char *data = stbi_load("assets/container.jpg", &width, &height, &nrChannels, 0);
     if (data)
     {
         glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, data);
+        glGenerateMipmap(GL_TEXTURE_2D);
+    }
+    else
+    {
+        std::cout << "Failed to load texture" << std::endl;
+    }
+    stbi_image_free(data);
+
+    unsigned int texBufferB;
+    glGenTextures(1, &texBufferB);
+    glActiveTexture(GL_TEXTURE1);
+    glBindTexture(GL_TEXTURE_2D, texBufferB);
+    data = stbi_load("assets/awesomeface.png", &width, &height, &nrChannels, 0);
+    if (data)
+    {
+        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, data);
         glGenerateMipmap(GL_TEXTURE_2D);
     }
     else
@@ -168,12 +189,17 @@ int main()
          */
         glClear(GL_COLOR_BUFFER_BIT);
 
-        glBindTexture(GL_TEXTURE_2D, texBuffer);
-        glBindVertexArray(VAO);
-        glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
+        glActiveTexture(GL_TEXTURE0);
+        glBindTexture(GL_TEXTURE_2D, texBufferA);
+        glActiveTexture(GL_TEXTURE1);
+        glBindTexture(GL_TEXTURE_2D, texBufferB);
 
         shader->use();
+        glUniform1i(glGetUniformLocation(shader->ID, "ourTexture"), 0);
+        glUniform1i(glGetUniformLocation(shader->ID, "ourFace"), 1);
 
+        glBindVertexArray(VAO);
+        glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
         glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
 
         /**
