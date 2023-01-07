@@ -6,7 +6,8 @@
                 "${default}",
                 "${workspaceFolder}/src",
                 "${workspaceFolder}/../vendor/Glad/include",
-                "${workspaceFolder}/../vendor/GLFW/include"
+                "${workspaceFolder}/../vendor/GLFW/include",
+                "${workspaceFolder}/../vendor/glm/glm"
             ],
             "defines": [
             ],
