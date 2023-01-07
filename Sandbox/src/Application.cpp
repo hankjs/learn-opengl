@@ -177,6 +177,13 @@ int main()
     /** 缩放 */
     // trans = glm::scale(trans, glm::vec3(0.5, 0.5, 0.5));
 
+    glm::mat4 modelMatrix;
+    modelMatrix = glm::rotate(modelMatrix, glm::radians(-55.0f), glm::vec3(1.0f, 0, 0));
+    glm::mat4 viewMatrix;
+    viewMatrix = glm::translate(viewMatrix, glm::vec3(0, 0, -3.0f));
+    glm::mat4 projectionMatrix;
+    projectionMatrix = glm::perspective(glm::radians(45.0f), 800.0f / 600.0f, 0.1f, 100.0f);
+
     // 只绘制线框
     // glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 
@@ -187,9 +194,9 @@ int main()
      */
     while (!glfwWindowShouldClose(window))
     {
-        glm::mat4 trans;
-        trans = glm::translate(trans, glm::vec3(0.5f, -0.5f, 0.0f));
-        trans = glm::rotate(trans, (float)glfwGetTime(), glm::vec3(0.0f, 0.0f, 1.0f));
+        // glm::mat4 trans;
+        // trans = glm::translate(trans, glm::vec3(0.5f, -0.5f, 0.0f));
+        // trans = glm::rotate(trans, (float)glfwGetTime(), glm::vec3(0.0f, 0.0f, 1.0f));
         // 输入
         processInput(window);
 
@@ -210,7 +217,10 @@ int main()
         shader->use();
         glUniform1i(glGetUniformLocation(shader->ID, "ourTexture"), 0);
         glUniform1i(glGetUniformLocation(shader->ID, "ourFace"), 1);
-        glUniformMatrix4fv(glGetUniformLocation(shader->ID, "transform"), 1, GL_FALSE, glm::value_ptr(trans));
+        // glUniformMatrix4fv(glGetUniformLocation(shader->ID, "transform"), 1, GL_FALSE, glm::value_ptr(trans));
+        glUniformMatrix4fv(glGetUniformLocation(shader->ID, "modelMatrix"), 1, GL_FALSE, glm::value_ptr(modelMatrix));
+        glUniformMatrix4fv(glGetUniformLocation(shader->ID, "viewMatrix"), 1, GL_FALSE, glm::value_ptr(viewMatrix));
+        glUniformMatrix4fv(glGetUniformLocation(shader->ID, "projectionMatrix"), 1, GL_FALSE, glm::value_ptr(projectionMatrix));
 
         glBindVertexArray(VAO);
         glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
