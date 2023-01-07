@@ -170,13 +170,12 @@ int main()
     }
     stbi_image_free(data);
 
-    glm::mat4 trans;
     /** 位移 */
     // trans = glm::translate(trans, glm::vec3(-0.0001f, 0, 0));
     // 旋转
-    trans = glm::rotate(trans, glm::radians(90.0f), glm::vec3(0.0, 0.0, 1.0));
+    // trans = glm::rotate(trans, glm::radians(90.0f), glm::vec3(0.0, 0.0, 1.0));
     /** 缩放 */
-    trans = glm::scale(trans, glm::vec3(0.5, 0.5, 0.5));
+    // trans = glm::scale(trans, glm::vec3(0.5, 0.5, 0.5));
 
     // 只绘制线框
     // glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
@@ -188,6 +187,9 @@ int main()
      */
     while (!glfwWindowShouldClose(window))
     {
+        glm::mat4 trans;
+        trans = glm::translate(trans, glm::vec3(0.5f, -0.5f, 0.0f));
+        trans = glm::rotate(trans, (float)glfwGetTime(), glm::vec3(0.0f, 0.0f, 1.0f));
         // 输入
         processInput(window);
 
