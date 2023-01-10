@@ -8,6 +8,8 @@
 #include <gtc/matrix_transform.hpp>
 #include <gtc/type_ptr.hpp>
 
+#include "Camera.h"
+
 void framebuffer_size_callback(GLFWwindow* window, int width, int height);
 void processInput(GLFWwindow *window);
 
@@ -226,10 +228,14 @@ int main()
     /** 缩放 */
     // trans = glm::scale(trans, glm::vec3(0.5, 0.5, 0.5));
 
+    // 初始化Camera
+    Camera camera(glm::vec3(0, 0, 3.0f), glm::vec3(0, 0, 0), glm::vec3(0, 1.0f, 0));
+
     glm::mat4 modelMatrix;
     modelMatrix = glm::rotate(modelMatrix, glm::radians(-55.0f), glm::vec3(1.0f, 0, 0));
     glm::mat4 viewMatrix;
-    viewMatrix = glm::translate(viewMatrix, glm::vec3(0, 0, -3.0f));
+    // viewMatrix = glm::translate(viewMatrix, glm::vec3(0, 0, -3.0f));
+    viewMatrix = camera.GetViewMatrix();
     glm::mat4 projectionMatrix;
     projectionMatrix = glm::perspective(glm::radians(45.0f), 800.0f / 600.0f, 0.1f, 100.0f);
 
