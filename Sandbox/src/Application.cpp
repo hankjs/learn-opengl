@@ -120,6 +120,19 @@ int main()
         0, 2, 3 // 第二个三角形
     };
 
+    glm::vec3 cubePositions[] = {
+        glm::vec3(0.0f,  0.0f,  0.0f), 
+        glm::vec3(2.0f,  5.0f, -15.0f), 
+        glm::vec3(-1.5f, -2.2f, -2.5f),  
+        glm::vec3(-3.8f, -2.0f, -12.3f),  
+        glm::vec3(2.4f, -0.4f, -3.5f),  
+        glm::vec3(-1.7f,  3.0f, -7.5f),  
+        glm::vec3(1.3f, -2.0f, -2.5f),  
+        glm::vec3(1.5f,  2.0f, -2.5f), 
+        glm::vec3(1.5f,  0.2f, -1.5f), 
+        glm::vec3(-1.3f,  1.0f, -1.5f)  
+    };
+
     unsigned int EBO;
     glGenBuffers(1, &EBO);
 
@@ -254,19 +267,28 @@ int main()
         glBindTexture(GL_TEXTURE_2D, texBufferA);
         glActiveTexture(GL_TEXTURE1);
         glBindTexture(GL_TEXTURE_2D, texBufferB);
-
-        shader->use();
-        glUniform1i(glGetUniformLocation(shader->ID, "ourTexture"), 0);
-        glUniform1i(glGetUniformLocation(shader->ID, "ourFace"), 1);
-        // glUniformMatrix4fv(glGetUniformLocation(shader->ID, "transform"), 1, GL_FALSE, glm::value_ptr(trans));
-        glUniformMatrix4fv(glGetUniformLocation(shader->ID, "modelMatrix"), 1, GL_FALSE, glm::value_ptr(modelMatrix));
-        glUniformMatrix4fv(glGetUniformLocation(shader->ID, "viewMatrix"), 1, GL_FALSE, glm::value_ptr(viewMatrix));
-        glUniformMatrix4fv(glGetUniformLocation(shader->ID, "projectionMatrix"), 1, GL_FALSE, glm::value_ptr(projectionMatrix));
-
         glBindVertexArray(VAO);
-        glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
+
+        for(unsigned int i = 0; i < 10; i++)
+        {
+            glm::mat4 model;
+            model = glm::translate(model, cubePositions[i]);
+            float angle = 20.0f * i; 
+            model = glm::rotate(model, glm::radians(angle), glm::vec3(1.0f, 0.3f, 0.5f));
+
+            shader->use();
+            glUniform1i(glGetUniformLocation(shader->ID, "ourTexture"), 0);
+            glUniform1i(glGetUniformLocation(shader->ID, "ourFace"), 1);
+            // glUniformMatrix4fv(glGetUniformLocation(shader->ID, "transform"), 1, GL_FALSE, glm::value_ptr(trans));
+            glUniformMatrix4fv(glGetUniformLocation(shader->ID, "modelMatrix"), 1, GL_FALSE, glm::value_ptr(model));
+            glUniformMatrix4fv(glGetUniformLocation(shader->ID, "viewMatrix"), 1, GL_FALSE, glm::value_ptr(viewMatrix));
+            glUniformMatrix4fv(glGetUniformLocation(shader->ID, "projectionMatrix"), 1, GL_FALSE, glm::value_ptr(projectionMatrix));
+
+            glDrawArrays(GL_TRIANGLES, 0, 36);
+        }
+
+        // glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
         // glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
-        glDrawArrays(GL_TRIANGLES, 0, 36);
 
         /**
          * 双缓冲(Double Buffer)
