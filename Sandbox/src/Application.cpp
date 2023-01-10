@@ -224,6 +224,11 @@ int main()
     // glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 
     /**
+     * 启用深度测试
+     */
+    glEnable(GL_DEPTH_TEST);
+
+    /**
      * glfwWindowShouldClose函数在我们每次循环的开始前检查一次GLFW是否被要求退出，如果是的话该函数返回true然后渲染循环便结束了，之后为我们就可以关闭应用程序了。
      * glfwPollEvents函数检查有没有触发什么事件（比如键盘输入、鼠标移动等）、更新窗口状态，并调用对应的回调函数（可以通过回调方法手动设置）。
      * glfwSwapBuffers函数会交换颜色缓冲（它是一个储存着GLFW窗口每一个像素颜色值的大缓冲），它在这一迭代中被用来绘制，并且将会作为输出显示在屏幕上。
@@ -243,7 +248,7 @@ int main()
          * GL_DEPTH_BUFFER_BIT
          * GL_STENCIL_BUFFER_BIT
          */
-        glClear(GL_COLOR_BUFFER_BIT);
+        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
         glActiveTexture(GL_TEXTURE0);
         glBindTexture(GL_TEXTURE_2D, texBufferA);
