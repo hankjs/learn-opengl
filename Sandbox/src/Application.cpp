@@ -229,7 +229,9 @@ int main()
     // trans = glm::scale(trans, glm::vec3(0.5, 0.5, 0.5));
 
     // 初始化Camera
-    Camera camera(glm::vec3(0, 0, 3.0f), glm::vec3(0, 0, 0), glm::vec3(0, 1.0f, 0));
+    // Camera camera(glm::vec3(0, 0, 3.0f), glm::vec3(0, 0, 0), glm::vec3(0, 1.0f, 0));
+    // 欧拉角Camera
+    Camera camera(glm::vec3(0, 0, 3.0f), glm::radians(30.0f), glm::radians(180.0f), glm::vec3(0, 1.0f, 0));
 
     glm::mat4 modelMatrix;
     modelMatrix = glm::rotate(modelMatrix, glm::radians(-55.0f), glm::vec3(1.0f, 0, 0));
