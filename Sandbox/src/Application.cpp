@@ -13,6 +13,35 @@
 void framebuffer_size_callback(GLFWwindow* window, int width, int height);
 void processInput(GLFWwindow *window);
 
+// 初始化Camera
+// Camera camera(glm::vec3(0, 0, 3.0f), glm::vec3(0, 0, 0), glm::vec3(0, 1.0f, 0));
+// 欧拉角Camera
+Camera camera(glm::vec3(0, 0, 3.0f), glm::radians(30.0f), glm::radians(180.0f), glm::vec3(0, 1.0f, 0));
+float lastX = 400.0f, lastY = 300.0f;
+bool firstMouse = true;
+void mouse_callback(GLFWwindow* window, double xPos, double yPos)
+{
+    std::cout << "firstMouse " << firstMouse << std::endl;
+    if(firstMouse)
+    {
+        lastX = (float)xPos;
+        lastY = (float)yPos;
+        firstMouse = false;
+    }
+    std::cout << "lastX " << lastX << std::endl;
+    std::cout << "lastY " << lastY << std::endl;
+    float deltaX, deltaY;
+    deltaX = (float)xPos - lastX;
+    deltaY = (float)yPos - lastY;
+    lastX = (float)xPos;
+    lastY = (float)yPos;
+
+    std::cout << "deltaX " << deltaX << std::endl;
+    std::cout << "deltaY " << deltaY << std::endl;
+
+    camera.ProcessMouseMovement(deltaX, -deltaY);
+}
+
 int main()
 {
     glfwInit();
@@ -34,6 +63,8 @@ int main()
         return -1;
     }
     glfwMakeContextCurrent(window);
+    glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
+    glfwSetCursorPosCallback(window, mouse_callback);
 
     /**
      * 初始化GLAD
@@ -228,16 +259,10 @@ int main()
     /** 缩放 */
     // trans = glm::scale(trans, glm::vec3(0.5, 0.5, 0.5));
 
-    // 初始化Camera
-    // Camera camera(glm::vec3(0, 0, 3.0f), glm::vec3(0, 0, 0), glm::vec3(0, 1.0f, 0));
-    // 欧拉角Camera
-    Camera camera(glm::vec3(0, 0, 3.0f), glm::radians(30.0f), glm::radians(180.0f), glm::vec3(0, 1.0f, 0));
-
     glm::mat4 modelMatrix;
     modelMatrix = glm::rotate(modelMatrix, glm::radians(-55.0f), glm::vec3(1.0f, 0, 0));
     glm::mat4 viewMatrix;
     // viewMatrix = glm::translate(viewMatrix, glm::vec3(0, 0, -3.0f));
-    viewMatrix = camera.GetViewMatrix();
     glm::mat4 projectionMatrix;
     projectionMatrix = glm::perspective(glm::radians(45.0f), 800.0f / 600.0f, 0.1f, 100.0f);
 
@@ -277,6 +302,7 @@ int main()
         glBindTexture(GL_TEXTURE_2D, texBufferB);
         glBindVertexArray(VAO);
 
+        viewMatrix = camera.GetViewMatrix();
         for(unsigned int i = 0; i < 10; i++)
         {
             glm::mat4 model;
