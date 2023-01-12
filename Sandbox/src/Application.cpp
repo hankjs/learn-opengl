@@ -95,23 +95,17 @@ float lastX = 400.0f, lastY = 300.0f;
 bool firstMouse = true;
 void mouse_callback(GLFWwindow* window, double xPos, double yPos)
 {
-    std::cout << "firstMouse " << firstMouse << std::endl;
     if(firstMouse)
     {
         lastX = (float)xPos;
         lastY = (float)yPos;
         firstMouse = false;
     }
-    std::cout << "lastX " << lastX << std::endl;
-    std::cout << "lastY " << lastY << std::endl;
     float deltaX, deltaY;
     deltaX = (float)xPos - lastX;
     deltaY = (float)yPos - lastY;
     lastX = (float)xPos;
     lastY = (float)yPos;
-
-    std::cout << "deltaX " << deltaX << std::endl;
-    std::cout << "deltaY " << deltaY << std::endl;
 
     camera.ProcessMouseMovement(deltaX, -deltaY);
 }

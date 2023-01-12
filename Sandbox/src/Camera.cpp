@@ -52,14 +52,8 @@ void Camera::ProcessMouseMovement(float xOffset, float yOffset, GLboolean constr
   xOffset *= MouseSensitivity;
   yOffset *= MouseSensitivity;
 
-  std::cout << "Before Yaw " << Yaw << std::endl;
   Yaw += xOffset;
-
-  std::cout << "Yaw " << Yaw << std::endl;
-
-  std::cout << "Before Pitch " << Pitch << std::endl;
   Pitch += yOffset;
-  std::cout << "Pitch " << Pitch << std::endl;
 
   // make sure that when pitch is out of bounds, screen doesn't get flipped
   if (constrainPitch)
