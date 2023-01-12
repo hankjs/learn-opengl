@@ -1,4 +1,4 @@
-﻿#include <iostream>
+#include <iostream>
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
 #include "Shader.h"
@@ -7,6 +7,7 @@
 #include <glm.hpp>
 #include <gtc/matrix_transform.hpp>
 #include <gtc/type_ptr.hpp>
+
 
 #include "Camera.h"
 
@@ -210,7 +211,7 @@ int main()
 #pragma endregion // Open a Window
 
 #pragma region Init Shader Program
-    Shader *shader = new Shader("shader/vertexShader.glsl", "shader/fragmentShader.glsl");
+    Shader *shader = new Shader("shader/vertexShader.vert", "shader/fragmentShader.frag");
 #pragma endregion // init Shader Program
 
 #pragma region Init and Load Models to VAO, VBO
@@ -304,6 +305,10 @@ int main()
             glUniformMatrix4fv(glGetUniformLocation(shader->ID, "modelMatrix"), 1, GL_FALSE, glm::value_ptr(modelMatrix));
             glUniformMatrix4fv(glGetUniformLocation(shader->ID, "viewMatrix"), 1, GL_FALSE, glm::value_ptr(viewMatrix));
             glUniformMatrix4fv(glGetUniformLocation(shader->ID, "projectionMatrix"), 1, GL_FALSE, glm::value_ptr(projectionMatrix));
+
+            // 在此之前不要忘记首先 use 对应的着色器程序（来设定uniform）
+            glUniform3f(glGetUniformLocation(shader->ID, "objectColor"), 1.0f, 0.5f, 0.31f);
+            glUniform3f(glGetUniformLocation(shader->ID, "ambientColor"), 1.0f, 1.0f, 1.0f);
 
             // Set Model
             glBindVertexArray(VAO);

@@ -7,8 +7,11 @@ in vec2 TexCoord; // uv
 uniform sampler2D ourTexture;
 uniform sampler2D ourFace;
 
+uniform vec3 objectColor;
+uniform vec3 ambientColor;
+
 void main()
 {
-  vec4 face = texture(ourFace, TexCoord);
-  FragColor = mix(texture(ourTexture, TexCoord), face, face.a * 0.2);
+    vec4 face = texture(ourFace, TexCoord);
+    FragColor = vec4(ambientColor * objectColor, 1.0) * mix(texture(ourTexture, TexCoord), face, face.a * 0.2);
 }
