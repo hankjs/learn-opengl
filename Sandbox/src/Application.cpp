@@ -1,4 +1,4 @@
-#include <iostream>
+﻿#include <iostream>
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
 #include "Shader.h"
@@ -8,6 +8,7 @@
 #include <gtc/matrix_transform.hpp>
 #include <gtc/type_ptr.hpp>
 
+#include "Utils.h"
 
 #include "Camera.h"
 
@@ -267,7 +268,7 @@ int main()
     /**
      * 启用深度测试
      */
-    glEnable(GL_DEPTH_TEST);
+    GLCall(glEnable(GL_DEPTH_TEST));
 
     while (!glfwWindowShouldClose(window))
     {
