@@ -1,12 +1,10 @@
 ﻿#include <iostream>
-#include <glad/glad.h>
-#include <GLFW/glfw3.h>
+#include "SandboxWindow.h"
 #include "Shader.h"
 #define STB_IMAGE_IMPLEMENTATION
 #include "stb_image.h"
 #include <glm.hpp>
 #include <gtc/matrix_transform.hpp>
-#include <gtc/type_ptr.hpp>
 
 #include "Utils.h"
 #include "VertexBuffer.h"
@@ -92,9 +90,6 @@ Camera camera(glm::vec3(0, 0, 3.0f), glm::radians(30.0f), glm::radians(180.0f), 
 #pragma endregion // Camera Declare
 
 #pragma region Input Declare
-void framebuffer_size_callback(GLFWwindow* window, int width, int height);
-void processInput(GLFWwindow *window);
-
 float lastX = 400.0f, lastY = 300.0f;
 bool firstMouse = true;
 void mouse_callback(GLFWwindow* window, double xPos, double yPos)
@@ -155,39 +150,28 @@ unsigned int loadImageToGPU(const char* filename, GLint internalFormat, GLenum f
 int main()
 {
 #pragma region Open a Window
-    glfwInit();
-    /** 设定OpenGL 版本: 3.3 */
-    glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3); // 指定OpenGL主版本
-    glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3); // 指定OpenGL次要版本
-    glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
-    /** MacOS 需要下面这行 */
-#ifdef __APPLE__
-    glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
-#endif
+//         glfwInit();
+//         /** 设定OpenGL 版本: 3.3 */
+//         glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3); // 指定OpenGL主版本
+//         glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3); // 指定OpenGL次要版本
+//         glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
+//         /** MacOS 需要下面这行 */
+// #ifdef __APPLE__
+//         glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
+// #endif
 
-    /** 创建一个窗口对象 */
-    GLFWwindow *window = glfwCreateWindow(800, 600, "LearnOpenGL", NULL, NULL);
-    if (window == NULL)
-    {
-        std::cout << "Failed to create GLFW window" << std::endl;
-        glfwTerminate();
-        return -1;
-    }
-    glfwMakeContextCurrent(window);
-    glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
-    glfwSetCursorPosCallback(window, mouse_callback);
+//         /** 创建一个窗口对象 */
+//         GLFWwindow *_window = glfwCreateWindow(800, 600, "Hank", NULL, NULL);
 
-    /**
-     * 初始化GLAD
-     * 我们给GLAD传入了用来加载系统相关的OpenGL函数指针地址的函数。
-     * GLFW给我们的是glfwGetProcAddress，它根据我们编译的系统定义了正确的函数。
-     */
-    if (!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress))
-    {
-        std::cout << "Failed to initialize GLAD" << std::endl;
-        return -1;
-    }
+    SandboxWindow::SandboxWindow sandboxWindow(800, 600, "LearnOpenGL");
 
+    sandboxWindow.onMouse(mouse_callback);
+    sandboxWindow.initGLAD();
+    sandboxWindow.setViewport();
+    sandboxWindow.autoResize();
+#pragma endregion // Open a Window
+
+#pragma region Init Shader Program
     {
         /** 打印OpenGL版本 */
         unsigned char *glVersion;
@@ -195,20 +179,6 @@ int main()
         std::cout << "Status: Using GL " << glVersion << std::endl;
     }
 
-    /**
-     * 视口
-     * 我们必须告诉OpenGL渲染窗口的尺寸大小
-     * glViewport函数前两个参数控制窗口左下角的位置。第三个和第四个参数控制渲染窗口的宽度和高度（像素）
-     */
-    glViewport(0, 0, 800, 600);
-
-    /**
-     * 当用户改变窗口的大小的时候，视口也应该被调整
-     */
-    glfwSetFramebufferSizeCallback(window, framebuffer_size_callback);
-#pragma endregion // Open a Window
-
-#pragma region Init Shader Program
     Shader *shader = new Shader("shader/vertexShader.vert", "shader/fragmentShader.frag");
 #pragma endregion // init Shader Program
 
@@ -249,10 +219,10 @@ int main()
      */
     GLCall(glEnable(GL_DEPTH_TEST));
 
-    while (!glfwWindowShouldClose(window))
+    while (!sandboxWindow.isClose())
     {
         // Process Input
-        processInput(window);
+        sandboxWindow.processInput();
 
         // Clear Screen
         glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
@@ -274,15 +244,15 @@ int main()
             glActiveTexture(GL_TEXTURE1);
             glBindTexture(GL_TEXTURE_2D, texBufferB);
             // Set Material -> Uniforms
-            glUniform1i(glGetUniformLocation(shader->ID, "ourTexture"), 0);
-            glUniform1i(glGetUniformLocation(shader->ID, "ourFace"), 1);
-            glUniformMatrix4fv(glGetUniformLocation(shader->ID, "modelMatrix"), 1, GL_FALSE, glm::value_ptr(modelMatrix));
-            glUniformMatrix4fv(glGetUniformLocation(shader->ID, "viewMatrix"), 1, GL_FALSE, glm::value_ptr(viewMatrix));
-            glUniformMatrix4fv(glGetUniformLocation(shader->ID, "projectionMatrix"), 1, GL_FALSE, glm::value_ptr(projectionMatrix));
+            shader->setInt("ourTexture", 0);
+            shader->setInt("ourFace", 1);
+            shader->setMat4("modelMatrix", modelMatrix);
+            shader->setMat4("viewMatrix", viewMatrix);
+            shader->setMat4("projectionMatrix", projectionMatrix);
 
             // 在此之前不要忘记首先 use 对应的着色器程序（来设定uniform）
-            glUniform3f(glGetUniformLocation(shader->ID, "objectColor"), 1.0f, 0.5f, 0.31f);
-            glUniform3f(glGetUniformLocation(shader->ID, "ambientColor"), 1.0f, 1.0f, 1.0f);
+            shader->setVec3("objectColor", 1.0f, 0.5f, 0.31f);
+            shader->setVec3("ambientColor", 1.0f, 1.0f, 1.0f);
 
             // Set Model
             vertexArray.Bind();
@@ -290,33 +260,8 @@ int main()
             // Drawcall
             glDrawArrays(GL_TRIANGLES, 0, 36);
         }
-
-        glfwSwapBuffers(window);
-        glfwPollEvents();
+        sandboxWindow.refresh();
     }
 
-    /**
-     * 释放/删除之前的分配的所有资源
-     */
-    glfwDestroyWindow(window);
-    glfwTerminate();
-
     return 0;
-}
-
-// process all input: query GLFW whether relevant keys are pressed/released this frame and react accordingly
-// ---------------------------------------------------------------------------------------------------------
-void processInput(GLFWwindow *window)
-{
-    if(glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS)
-        glfwSetWindowShouldClose(window, true);
-}
-
-// glfw: whenever the window size changed (by OS or user resize) this callback function executes
-// ---------------------------------------------------------------------------------------------
-void framebuffer_size_callback(GLFWwindow* window, int width, int height)
-{
-    // make sure the viewport matches the new window dimensions; note that width and 
-    // height will be significantly larger than specified on retina displays.
-    glViewport(0, 0, width, height);
 }
