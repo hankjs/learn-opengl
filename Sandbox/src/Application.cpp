@@ -9,6 +9,7 @@
 #include <gtc/type_ptr.hpp>
 
 #include "Utils.h"
+#include "VertexBuffer.h"
 
 #include "Camera.h"
 
@@ -213,24 +214,8 @@ int main()
     unsigned int VAO;
     glGenVertexArrays(1, &VAO);
     glBindVertexArray(VAO);
-    /**
-     * 顶点缓冲对象(Vertex Buffer Objects, VBO
-    */
-    unsigned int VBO;
-    glGenBuffers(1, &VBO);
 
-    /**
-     * OpenGL有很多缓冲对象类型，顶点缓冲对象的缓冲类型是GL_ARRAY_BUFFER。
-     * OpenGL允许我们同时绑定多个缓冲，只要它们是不同的缓冲类型。
-     * 我们可以使用glBindBuffer函数把新创建的缓冲绑定到GL_ARRAY_BUFFER目标上：
-    */
-    glBindBuffer(GL_ARRAY_BUFFER, VBO);
-
-    /**
-     * 从这一刻起，我们使用的任何（在GL_ARRAY_BUFFER目标上的）缓冲调用都会用来配置当前绑定的缓冲(VBO)。
-     * 然后我们可以调用glBufferData函数，它会把之前定义的顶点数据复制到缓冲的内存中：
-    */
-    glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
+    VertexBuffer vertexBuffer(vertices, sizeof(vertices));
 
     glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void *)0);
     glEnableVertexAttribArray(0);
@@ -307,6 +292,7 @@ int main()
 
             // Set Model
             glBindVertexArray(VAO);
+            vertexBuffer.Bind();
 
             // Drawcall
             glDrawArrays(GL_TRIANGLES, 0, 36);
