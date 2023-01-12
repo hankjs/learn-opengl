@@ -10,6 +10,8 @@
 
 #include "Utils.h"
 #include "VertexBuffer.h"
+#include "VertexBufferLayout.h"
+#include "VertexArray.h"
 
 #include "Camera.h"
 
@@ -211,20 +213,12 @@ int main()
 #pragma endregion // init Shader Program
 
 #pragma region Init and Load Models to VAO, VBO
-    unsigned int VAO;
-    glGenVertexArrays(1, &VAO);
-    glBindVertexArray(VAO);
-
+    VertexArray vertexArray;
     VertexBuffer vertexBuffer(vertices, sizeof(vertices));
-
-    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void *)0);
-    glEnableVertexAttribArray(0);
-
-    // glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void *)(3 * sizeof(float)));
-    // glEnableVertexAttribArray(1);
-
-    glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void *)(3 * sizeof(float)));
-    glEnableVertexAttribArray(2);
+    VertexBufferLayout layout;
+    layout.Push<float>(3);
+    layout.Push<float>(2);
+    vertexArray.AddBuffer(vertexBuffer, layout);
 #pragma endregion // Init and Load Models to VAO, VBO
 
 #pragma region Init Textures
@@ -291,8 +285,7 @@ int main()
             glUniform3f(glGetUniformLocation(shader->ID, "ambientColor"), 1.0f, 1.0f, 1.0f);
 
             // Set Model
-            glBindVertexArray(VAO);
-            vertexBuffer.Bind();
+            vertexArray.Bind();
 
             // Drawcall
             glDrawArrays(GL_TRIANGLES, 0, 36);
