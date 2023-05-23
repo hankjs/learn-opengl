@@ -200,16 +200,29 @@ void ApplicationRender() {
     projectionMatrix = glm::perspective(glm::radians(45.0f), 800.0f / 600.0f, 0.1f, 100.0f);
 #pragma endregion // Prepare MVP matrices
 
+
     // 只绘制线框
     // glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+
+    // Set Model matrix
+    modelMatrix = glm::translate(glm::mat4(1.0f), cubePositions[0]);
 
     /**
      * 启用深度测试
      */
     GLCall(glEnable(GL_DEPTH_TEST));
 
+    float currentTime = (float)glfwGetTime();
+    float prevTime = currentTime;
+    float deltaTime = currentTime - prevTime;
+
     while (!sandboxWindow.isClose())
     {
+        currentTime = (float)glfwGetTime();
+        deltaTime = currentTime - prevTime;
+        prevTime = currentTime;
+
+        std::cout << "deltaTime: " << deltaTime << std::endl;
         // Process Input
         sandboxWindow.processInput();
 
@@ -217,9 +230,7 @@ void ApplicationRender() {
         glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-        // Set Model matrix
-        modelMatrix = glm::translate(glm::mat4(1.0f), cubePositions[0]);
-
+        modelMatrix = glm::rotate(modelMatrix, deltaTime, glm::vec3(0, 0, 1.0f));
 
         // Set Material -> Shader Program
         shader->use();

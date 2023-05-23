@@ -92,7 +92,7 @@ void Shader::checkCompileErrors(unsigned int shader, std::string type)
     glGetProgramiv(shader, GL_LINK_STATUS, &success);
   }
   
-  if (!success)
+  if (success == GL_FALSE)
   {
     type != "PROGRAM" ? glGetShaderInfoLog(shader, 512, NULL, infoLog) : glGetProgramInfoLog(shader, 512, NULL, infoLog);
     std::cout << "ERROR::SHADER::" << type << "::COMPILATION_FAILED\n"

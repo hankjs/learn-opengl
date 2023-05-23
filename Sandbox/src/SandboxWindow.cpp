@@ -26,7 +26,7 @@ namespace SandboxWindow
             throw -1;
         }
         glfwMakeContextCurrent(_window);
-        glfwSetInputMode(_window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
+        glfwSetInputMode(_window, GLFW_CURSOR, GLFW_CURSOR_NORMAL);
     }
 
     SandboxWindow::~SandboxWindow()
