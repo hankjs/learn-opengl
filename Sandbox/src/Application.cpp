@@ -11,8 +11,6 @@
 #include "VertexBufferLayout.h"
 #include "VertexArray.h"
 
-#include "Camera.h"
-
 #pragma region Model Data
 /**
  * 矩形形的顶点坐标
@@ -82,13 +80,6 @@ glm::vec3 cubePositions[] = {
     glm::vec3(-1.3f, 1.0f, -1.5f)};
 #pragma endregion
 
-#pragma region Camera Declare
-// 初始化Camera
-// Camera camera(glm::vec3(0, 0, 3.0f), glm::vec3(0, 0, 0), glm::vec3(0, 1.0f, 0));
-// 欧拉角Camera
-Camera camera(glm::vec3(0, 0, 3.0f), glm::radians(30.0f), glm::radians(180.0f), glm::vec3(0, 1.0f, 0));
-#pragma endregion // Camera Declare
-
 #pragma region Input Declare
 float lastX = 400.0f, lastY = 300.0f;
 bool firstMouse = true;
@@ -106,7 +97,6 @@ void mouse_callback(GLFWwindow* window, double xPos, double yPos)
     lastX = (float)xPos;
     lastY = (float)yPos;
 
-    camera.ProcessMouseMovement(deltaX, -deltaY);
 }
 #pragma endregion // Input Declare
 
@@ -228,7 +218,6 @@ int main()
         glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-        viewMatrix = camera.GetViewMatrix();
         for(unsigned int i = 0; i < 10; i++)
         {
             // Set Model matrix
