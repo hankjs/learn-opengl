@@ -79,7 +79,7 @@ namespace SandboxWindow
 
     void SandboxWindow::onMouse(void mouse_callback(GLFWwindow *window, double xPos, double yPos))
     {
-        glfwSetCursorPosCallback(_window, mouse_callback);
+        // glfwSetCursorPosCallback(_window, mouse_callback);
     }
 
     void SandboxWindow::onResize(void framebuffer_size_callback(GLFWwindow *window, int width, int height))

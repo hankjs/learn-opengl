@@ -68,7 +68,7 @@ unsigned int indices[] = {
 };
 
 glm::vec3 cubePositions[] = {
-    glm::vec3(0.0f, 0.0f, 0.0f),
+    glm::vec3(0.0f, 0.0f, -3.0f),
     glm::vec3(2.0f, 5.0f, -15.0f),
     glm::vec3(-1.5f, -2.2f, -2.5f),
     glm::vec3(-3.8f, -2.0f, -12.3f),
@@ -137,8 +137,7 @@ unsigned int loadImageToGPU(const char* filename, GLint internalFormat, GLenum f
     return texBuffer;
 }
 
-int main()
-{
+void ApplicationRender() {
 #pragma region Open a Window
 //         glfwInit();
 //         /** 设定OpenGL 版本: 3.3 */
@@ -218,39 +217,33 @@ int main()
         glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-        for(unsigned int i = 0; i < 10; i++)
-        {
-            // Set Model matrix
-            modelMatrix = glm::translate(glm::mat4(1.0f), cubePositions[i]);
+        // Set Model matrix
+        modelMatrix = glm::translate(glm::mat4(1.0f), cubePositions[0]);
 
-            // Set View and Projection Matrices here if you want.
 
-            // Set Material -> Shader Program
-            shader->use();
-            // Set Material -> Textures
-            glActiveTexture(GL_TEXTURE0);
-            glBindTexture(GL_TEXTURE_2D, texBufferA);
-            glActiveTexture(GL_TEXTURE1);
-            glBindTexture(GL_TEXTURE_2D, texBufferB);
-            // Set Material -> Uniforms
-            shader->setInt("ourTexture", 0);
-            shader->setInt("ourFace", 1);
-            shader->setMat4("modelMatrix", modelMatrix);
-            shader->setMat4("viewMatrix", viewMatrix);
-            shader->setMat4("projectionMatrix", projectionMatrix);
+        // Set Material -> Shader Program
+        shader->use();
+        // Set Material -> Textures
+        glActiveTexture(GL_TEXTURE0);
+        glBindTexture(GL_TEXTURE_2D, texBufferA);
+        glActiveTexture(GL_TEXTURE1);
+        glBindTexture(GL_TEXTURE_2D, texBufferB);
+        // Set Material -> Uniforms
+        shader->setInt("ourTexture", 0);
+        shader->setInt("ourFace", 1);
+        shader->setMat4("modelMatrix", modelMatrix);
+        shader->setMat4("viewMatrix", viewMatrix);
+        shader->setMat4("projectionMatrix", projectionMatrix);
 
-            // 在此之前不要忘记首先 use 对应的着色器程序（来设定uniform）
-            shader->setVec3("objectColor", 1.0f, 0.5f, 0.31f);
-            shader->setVec3("ambientColor", 1.0f, 1.0f, 1.0f);
+        // 在此之前不要忘记首先 use 对应的着色器程序（来设定uniform）
+        shader->setVec3("objectColor", 1.0f, 1.0f, 1.0f);
+        shader->setVec3("ambientColor", 1.0f, 1.0f, 1.0f);
 
-            // Set Model
-            vertexArray.Bind();
+        //  Model
+        vertexArray.Bind();
 
-            // Drawcall
-            glDrawArrays(GL_TRIANGLES, 0, 36);
-        }
+        // Drawcall
+        glDrawArrays(GL_TRIANGLES, 0, 36);
         sandboxWindow.refresh();
     }
-
-    return 0;
 }
