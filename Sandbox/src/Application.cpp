@@ -222,7 +222,6 @@ void ApplicationRender() {
         deltaTime = currentTime - prevTime;
         prevTime = currentTime;
 
-        std::cout << "deltaTime: " << deltaTime << std::endl;
         // Process Input
         sandboxWindow.processInput();
 
