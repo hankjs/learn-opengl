@@ -68,7 +68,7 @@ unsigned int indices[] = {
 };
 
 glm::vec3 cubePositions[] = {
-    glm::vec3(0.0f, 0.0f, -3.0f),
+    glm::vec3(0.0f, 0.0f, -0.0f),
     glm::vec3(2.0f, 5.0f, -15.0f),
     glm::vec3(-1.5f, -2.2f, -2.5f),
     glm::vec3(-3.8f, -2.0f, -12.3f),
@@ -195,7 +195,10 @@ void ApplicationRender() {
 
 #pragma region Prepare MVP matrices
     glm::mat4 modelMatrix;
+    // Set Model matrix
+    modelMatrix = glm::rotate(glm::mat4(1.0f), glm::radians(-55.0f), glm::vec3(1.0f, 0.0f, 0.0));
     glm::mat4 viewMatrix;
+    viewMatrix = glm::translate(glm::mat4(1.0f), glm::vec3(0.0f, 0.0f, -3.0f));
     glm::mat4 projectionMatrix;
     projectionMatrix = glm::perspective(glm::radians(45.0f), 800.0f / 600.0f, 0.1f, 100.0f);
 #pragma endregion // Prepare MVP matrices
@@ -204,8 +207,6 @@ void ApplicationRender() {
     // 只绘制线框
     // glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 
-    // Set Model matrix
-    modelMatrix = glm::translate(glm::mat4(1.0f), cubePositions[0]);
 
     /**
      * 启用深度测试
@@ -228,8 +229,6 @@ void ApplicationRender() {
         // Clear Screen
         glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-
-        modelMatrix = glm::rotate(modelMatrix, deltaTime, glm::vec3(0, 0, 1.0f));
 
         // Set Material -> Shader Program
         shader->use();
